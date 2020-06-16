@@ -7,4 +7,4 @@ export const fetchShow = () => {
       )
       .then(res => res)
       .catch(err => err);
-  };
+};
