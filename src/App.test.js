@@ -1,8 +1,10 @@
 import React from 'react';
 import { render, waitFor } from '@testing-library/react';
 import App from './App';
+import { screen } from '@testing-library/dom'
 import userEvent from "@testing-library/user-event";
 import { fetchShow as mockFetchShow } from './api/fetchShow'
+import { act } from 'react-dom/test-utils';
 
 jest.mock('./api/fetchShow');
 
@@ -605,19 +607,22 @@ const showData = {
     }
   }
 
-  test('renders App without errors', () => {
+  test('Initially renders App', () => {
     mockFetchShow.mockResolvedValueOnce(showData)
+    
     render(<App />)
 })
 
 
 test("Renders correctly after API call", async () => {
     mockFetchShow.mockResolvedValueOnce(showData);
-    const { getByText } = render(<App />);
+    render(<App />);
     
     await waitFor(() => {
-        getByText(/select a season/i)
-        userEvent.click(getByText(/season 1/i))
-        expect(getByText(/episode/i)).toHaveLength(8)
+        screen.getByText(/select a season/i)
     })
+    
+    userEvent.click(screen.getByText(/select a season/i))
+    userEvent.click(screen.getByText(/season 1/i))
+    expect(screen.getAllByText(/episode/i)).toHaveLength(8)
 })
